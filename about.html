@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>About — Outlaw Studio</title>
+<meta name="description" content="The story behind Outlaw Studio — why we built it, who it's for, and what we're fighting against."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Rubik+Dirt&family=Barlow+Condensed:wght@700;900&family=Outfit:wght@300;400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--gold:#FDDF21;--bg:#080808;--s1:#0d0d0d;--s2:#111111;--panel:#161616;--border:#222222;--border2:#2e2e2e;--text:#f0ece0;--muted:#888877;--muted2:#aaa99a;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.045'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:0.8;}
+body>*{position:relative;z-index:1;}
+nav{display:flex;align-items:center;justify-content:space-between;padding:0 48px;height:62px;border-bottom:1px solid var(--border);background:rgba(8,8,8,0.96);position:sticky;top:0;z-index:100;backdrop-filter:blur(10px);}
+.nav-brand{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:22px;color:var(--gold);text-decoration:none;letter-spacing:0.08em;}
+.nav-links{display:flex;align-items:center;gap:28px;list-style:none;}
+.nav-links a{color:var(--muted);text-decoration:none;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;letter-spacing:0.1em;text-transform:uppercase;transition:color 0.2s;}
+.nav-links a:hover,.nav-links a.active{color:var(--text);}
+.about-hero{padding:100px 48px 72px;max-width:900px;margin:0 auto;text-align:center;border-bottom:1px solid var(--border);}
+.eyebrow{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gold);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:16px;}
+.about-hero h1{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(40px,6vw,76px);color:var(--text);line-height:1.0;letter-spacing:0.02em;margin-bottom:24px;}
+.about-hero h1 span{color:var(--gold);}
+.about-hero .lead{font-size:clamp(16px,2vw,20px);color:var(--muted2);line-height:1.75;font-weight:300;max-width:680px;margin:0 auto;}
+.about-body{max-width:780px;margin:0 auto;padding:72px 48px;}
+.about-body p{font-size:16px;color:var(--muted2);line-height:1.85;font-weight:300;margin-bottom:28px;}
+.about-body p strong{color:var(--text);font-weight:600;}
+.about-body p em{color:var(--gold);font-style:normal;font-weight:600;}
+.pull-quote{border-left:3px solid var(--gold);padding:20px 28px;margin:40px 0;background:var(--s1);}
+.pull-quote p{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:clamp(20px,2.5vw,28px);color:var(--text);line-height:1.3;letter-spacing:0.02em;margin-bottom:0;}
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);margin:48px 0;}
+.stat-card{background:var(--s1);padding:28px 24px;text-align:center;}
+.stat-number{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:42px;color:var(--gold);letter-spacing:0.02em;margin-bottom:6px;}
+.stat-label{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;line-height:1.5;}
+.section-divider{border:none;border-top:1px solid var(--border);margin:48px 0;}
+.about-section-title{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(24px,3vw,36px);color:var(--text);letter-spacing:0.02em;margin-bottom:20px;}
+.about-section-title span{color:var(--gold);}
+.values-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);margin:32px 0;}
+.value-card{background:var(--s1);padding:28px 24px;}
+.value-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:17px;color:var(--text);margin-bottom:10px;letter-spacing:0.04em;}
+.value-desc{font-size:13px;color:var(--muted2);line-height:1.7;font-weight:300;}
+.cta-block{background:var(--s1);border:1px solid var(--border2);padding:48px;text-align:center;margin-top:56px;}
+.cta-block h3{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:32px;color:var(--text);margin-bottom:12px;letter-spacing:0.02em;}
+.cta-block p{font-size:15px;color:var(--muted2);margin-bottom:28px;font-weight:300;}
+.btn-primary{background:var(--gold);color:#080808;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;letter-spacing:0.1em;text-transform:uppercase;padding:13px 32px;border:none;cursor:pointer;text-decoration:none;display:inline-block;transition:opacity 0.2s;}
+.btn-primary:hover{opacity:0.88;}
+footer{border-top:1px solid var(--border);padding:48px 48px 28px;background:var(--s1);}
+.footer-inner{max-width:1120px;margin:0 auto;}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
+.footer-copy,.footer-email{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:0.06em;text-decoration:none;}
+.footer-email:hover{color:var(--gold);}
+@media(max-width:768px){nav{padding:0 20px;}.about-hero{padding:72px 24px 56px;}.about-body{padding:56px 24px;}.stat-row{grid-template-columns:1fr;}.values-grid{grid-template-columns:1fr;}.cta-block{padding:36px 24px;}footer{padding:36px 20px 24px;}.footer-bottom{flex-direction:column;text-align:center;}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-brand">OUTLAW STUDIO</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="index.html#pricing">Pricing</a></li>
+    <li><a href="about.html" class="active">About</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+</nav>
+
+<div class="about-hero">
+  <p class="eyebrow">// Our Story</p>
+  <h1>Built by someone who<br/><span>got fed up.</span></h1>
+  <p class="lead">Outlaw Studio didn't start with a business plan. It started with a $1 payout, a design takedown, and the realization that the system was never built to work for the people creating things inside it.</p>
+</div>
+
+<div class="about-body">
+
+  <p>My name is Kenny. I've been making my own designs for years. Not because I was trying to build a business — because I love it. I have a style, a sense of humor, a way of seeing things that nobody else sees exactly the same way. That's true for everyone. Every person walking around has something in them that's entirely their own, even if everyday life does its best to squeeze it out of them.</p>
+
+  <p>When I wear something I designed myself and someone stops me to ask where I got it — it doesn't matter if they're laughing, confused, or genuinely impressed — <strong>I get excited to tell them I made it.</strong> That feeling is real and it belongs to everybody, not just people who went to art school.</p>
+
+  <div class="pull-quote">
+    <p>"The same day I sold a design on TeePublic for one dollar, the same design got taken down on Redbubble. I didn't even know they were the same company."</p>
+  </div>
+
+  <p>That's the day Outlaw Studio started — not in a boardroom, not with seed funding. It started because I sat there looking at a $1 payout notification and a takedown email and thought: <em>there has to be something better than this.</em></p>
+
+  <p><strong>TeePublic and Redbubble are both owned by Articore Group Limited.</strong> Together they had nearly 170,000 designers selling on their platforms in 2025. That's 170,000 people putting their creativity into a machine that pays them $1–2.50 on a $24 shirt, takes their design down without warning if it trips a wire, and moves on because they have 169,999 other designers to fill the gap. It's no skin off their back. It's everything to you.</p>
+
+  <div class="stat-row">
+    <div class="stat-card">
+      <div class="stat-number">~170K</div>
+      <div class="stat-label">Designers on Articore platforms in 2025</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">$1–2</div>
+      <div class="stat-label">Typical payout on a $24 shirt</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">$0</div>
+      <div class="stat-label">Warning given when your design gets taken down</div>
+    </div>
+  </div>
+
+  <p>And it's not just the money. It's the invisibility. I'd upload a design, search for it by name on the platform, and I couldn't find it. I had to go to Google and search the exact title in quotation marks just to see something I made show up. That's not a platform working for you. That's a platform you happen to exist on.</p>
+
+  <p>Designers are expected to know IP law, DMCA rules, USPTO trademark databases, and the terms of service for every marketplace they list on — terms that can change without notice while you're sleeping. Nobody tells you this when you start. You find out when something gets taken down.</p>
+
+  <hr class="section-divider"/>
+
+  <h2 class="about-section-title">What we're actually<br/><span>building here.</span></h2>
+
+  <p>Outlaw Studio is an AI-powered design generation platform combined with a compliance tool we call the <strong>Outlaw-o-Meter™</strong> — a 1–10 scan that checks your design against DMCA records, USPTO trademark databases, and marketplace-specific enforcement patterns before you list it anywhere.</p>
+
+  <p>We're not promising a force field. <em>No design is ever 100% bulletproof and we will never claim otherwise.</em> What we can do is put real information in your hands before you hit publish instead of after. The grey zone exists — that's where a lot of the most interesting designs live — and we're here to help you navigate it with your eyes open, not stumble through it blind.</p>
+
+  <p>If a design scores high and you're still not worried about it, you can list it right here on the Outlaw Studio platform. We charge a flat fee. We don't take a percentage of your sales. We don't have a tiered payout structure that cuts your earnings when you're succeeding. <strong>You set your price. You see your profit. It's in black and white before you ever click publish.</strong></p>
+
+  <p>And here's something the big platforms will never say: <strong>this isn't just for commercial sellers.</strong> If you want to make one shirt — just for you, just because you thought of something and you want to see it on a shirt — do it. There's no minimum order. No minimum anything. Come in, make the thing you want to make, and get out. That's it.</p>
+
+  <p>We also maintain a catalog of our own designs that users can license and sell through their own stores at no extra cost. We cap the number of sellers per design to keep things from getting diluted. You're not competing with ten thousand other stores selling the exact same thing.</p>
+
+  <hr class="section-divider"/>
+
+  <h2 class="about-section-title">Who we're here for.</h2>
+
+  <p>We're here for the person who cried at the end of Terminator 2 and wants a shirt that says something about that. The tough biker from New Orleans with a sensitive side who just designed something with kittens having a pillow fight. The bassoonist for a philharmonic orchestra who's quietly into something nobody would expect. The 80s kid. The D&amp;D nerd. The anime fan who doesn't advertise it. The nature lover. The dark one. The sensitive one. The one who misses how things used to be and the one who's excited about where things are going.</p>
+
+  <p>Everybody has a drop of creativity left in the tank no matter how hard life squeezes. We're here to help you do something with it — and make sure it doesn't get crushed by a system that was never built with you in mind.</p>
+
+  <p>We don't gatekeep. We don't judge. If it's legal, it belongs somewhere, and we'll help you figure out where the line is before you cross it. <strong>Be as beautiful or as chaotic as you want. That's kind of the whole point.</strong></p>
+
+  <hr class="section-divider"/>
+
+  <h2 class="about-section-title">Our commitment<br/><span>to our users.</span></h2>
+
+  <p>One of the things that drove me to build this was the experience of having designs removed with nothing more than a form email. No explanation of what specifically triggered the removal. No path to fixing it. No warning before it happened.</p>
+
+  <p>Outlaw Studio will always tell you why. If something gets flagged — by our scan or by a platform — we communicate clearly, specifically, and promptly. We are building a company that treats the people using it like adults who deserve real information, not boilerplate messages designed to limit liability.</p>
+
+  <p>We're also printing through a USA-based fulfillment partner. Quality controlled, domestically produced, and built on a supply chain we trust.</p>
+
+  <div class="values-grid">
+    <div class="value-card">
+      <div class="value-title">Flat fees. Full transparency.</div>
+      <p class="value-desc">One flat fee per transaction. You always know your exact profit before you list. No mystery, no percentage disappearing into a black box.</p>
+    </div>
+    <div class="value-card">
+      <div class="value-title">Real compliance guidance.</div>
+      <p class="value-desc">The Outlaw-o-Meter gives you specific, actionable scan results — not vague risk warnings. You know what's flagged and what to do about it.</p>
+    </div>
+    <div class="value-card">
+      <div class="value-title">No minimums. No gatekeeping.</div>
+      <p class="value-desc">Make one design. Make five hundred. Come in for yourself or to build a store. The door is open either way.</p>
+    </div>
+    <div class="value-card">
+      <div class="value-title">We tell you why.</div>
+      <p class="value-desc">If something gets removed or flagged, you'll hear from us directly with a real explanation — not a form letter designed to say nothing.</p>
+    </div>
+  </div>
+
+  <div class="cta-block">
+    <h3>We're almost ready.</h3>
+    <p>Outlaw Studio is in development and moving toward launch. Get on the early access list and you'll be first in when the doors open.</p>
+    <a href="contact.html" class="btn-primary">Get Early Access</a>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2026 Outlaw Studio. All rights reserved. &nbsp;|&nbsp; <a href="privacy.html" style="color:var(--muted);text-decoration:none;">Privacy</a> &nbsp;|&nbsp; <a href="terms.html" style="color:var(--muted);text-decoration:none;">Terms</a></p>
+      <a href="mailto:outlawstudio1@gmail.com" class="footer-email">outlawstudio1@gmail.com</a>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
