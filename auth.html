@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Sign In — Outlaw Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Rubik+Dirt&family=Barlow+Condensed:wght@700;900&family=Outfit:wght@300;400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--gold:#FDDF21;--bg:#080808;--s1:#0d0d0d;--s2:#111111;--panel:#161616;--border:#222222;--border2:#2e2e2e;--text:#f0ece0;--muted:#888877;--muted2:#aaa99a;}
+body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.045'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:0.8;}
+body>*{position:relative;z-index:1;}
+nav{display:flex;align-items:center;justify-content:space-between;padding:0 48px;height:62px;border-bottom:1px solid var(--border);background:rgba(8,8,8,0.96);position:sticky;top:0;z-index:100;backdrop-filter:blur(10px);}
+.nav-brand{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:22px;color:var(--gold);text-decoration:none;letter-spacing:0.08em;}
+.nav-links{display:flex;align-items:center;gap:28px;list-style:none;}
+.nav-links a{color:var(--muted);text-decoration:none;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;letter-spacing:0.1em;text-transform:uppercase;transition:color 0.2s;}
+.nav-links a:hover{color:var(--text);}
+.nav-badge{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gold);border:1px solid rgba(253,223,33,0.35);padding:4px 10px;letter-spacing:0.12em;}
+
+.auth-wrap{min-height:calc(100vh - 62px);display:flex;align-items:center;justify-content:center;padding:60px 24px;}
+.auth-box{width:100%;max-width:440px;}
+.auth-eyebrow{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gold);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:14px;}
+.auth-title{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:48px;color:var(--text);line-height:1.0;letter-spacing:0.02em;margin-bottom:8px;}
+.auth-title span{color:var(--gold);}
+.auth-sub{font-size:14px;color:var(--muted2);font-weight:300;margin-bottom:36px;line-height:1.7;}
+
+.tab-row{display:flex;border-bottom:1px solid var(--border);margin-bottom:32px;}
+.tab{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);padding:12px 24px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all 0.2s;background:none;border-top:none;border-left:none;border-right:none;}
+.tab.active{color:var(--gold);border-bottom-color:var(--gold);}
+.tab:hover{color:var(--text);}
+
+.auth-form{display:none;flex-direction:column;gap:20px;}
+.auth-form.active{display:flex;}
+
+.form-group{display:flex;flex-direction:column;gap:8px;}
+.form-label{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:0.15em;text-transform:uppercase;}
+.form-input{background:var(--s1);border:1px solid var(--border2);color:var(--text);font-family:'Outfit',sans-serif;font-size:14px;font-weight:300;padding:13px 14px;outline:none;transition:border-color 0.2s;width:100%;}
+.form-input:focus{border-color:var(--gold);}
+.form-input::placeholder{color:var(--muted);}
+
+.btn-submit{background:var(--gold);color:#080808;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;letter-spacing:0.1em;text-transform:uppercase;padding:14px;border:none;cursor:pointer;transition:opacity 0.2s;width:100%;margin-top:4px;}
+.btn-submit:hover{opacity:0.88;}
+.btn-submit:disabled{opacity:0.5;cursor:not-allowed;}
+
+.auth-message{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.06em;padding:14px;border:1px solid;display:none;line-height:1.6;}
+.auth-message.success{color:#39d353;border-color:rgba(57,211,83,0.3);background:rgba(57,211,83,0.05);}
+.auth-message.error{color:#ef4444;border-color:rgba(239,68,68,0.3);background:rgba(239,68,68,0.05);}
+.auth-message.visible{display:block;}
+
+.auth-note{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:0.06em;text-align:center;margin-top:8px;line-height:1.7;}
+.auth-note a{color:var(--gold);text-decoration:none;}
+.auth-note a:hover{text-decoration:underline;}
+
+.divider{display:flex;align-items:center;gap:14px;margin:4px 0;}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border);}
+.divider span{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:0.1em;}
+
+/* Logged in state */
+.dashboard-box{display:none;text-align:center;padding:40px;}
+.dashboard-box.visible{display:block;}
+.dashboard-welcome{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:36px;color:var(--text);margin-bottom:8px;}
+.dashboard-welcome span{color:var(--gold);}
+.dashboard-sub{font-size:14px;color:var(--muted2);margin-bottom:32px;font-weight:300;}
+.btn-signout{background:transparent;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;letter-spacing:0.1em;text-transform:uppercase;padding:12px 28px;border:1px solid var(--border2);cursor:pointer;transition:all 0.2s;}
+.btn-signout:hover{border-color:var(--muted);color:var(--text);}
+
+footer{border-top:1px solid var(--border);padding:28px 48px;text-align:center;margin-top:20px;}
+.footer-copy{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);}
+.footer-copy a{color:var(--muted);text-decoration:none;}
+.footer-copy a:hover{color:var(--gold);}
+@media(max-width:768px){nav{padding:0 20px;}.nav-badge{display:none;}footer{padding:24px;}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-brand">OUTLAW STUDIO</a>
+  <ul class="nav-links">
+    <li><a href="index.html#features">Features</a></li>
+    <li><a href="index.html#pricing">Pricing</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <span class="nav-badge">BETA — COMING SOON</span>
+</nav>
+
+<div class="auth-wrap">
+  <div class="auth-box">
+
+    <!-- Logged out state -->
+    <div id="authForms">
+      <p class="auth-eyebrow">// Account Access</p>
+      <h1 class="auth-title">Your designs.<br/><span>Your margins.</span></h1>
+      <p class="auth-sub">Sign in to your Outlaw Studio account or create one to get started.</p>
+
+      <div class="tab-row">
+        <button class="tab active" onclick="switchTab('signin')">Sign In</button>
+        <button class="tab" onclick="switchTab('signup')">Create Account</button>
+      </div>
+
+      <div id="msgBox" class="auth-message"></div>
+
+      <!-- Sign In Form -->
+      <div id="signinForm" class="auth-form active">
+        <div class="form-group">
+          <label class="form-label" for="signin-email">Email Address</label>
+          <input class="form-input" type="email" id="signin-email" placeholder="you@example.com" required/>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="signin-password">Password</label>
+          <input class="form-input" type="password" id="signin-password" placeholder="Your password" required/>
+        </div>
+        <button class="btn-submit" id="signinBtn" onclick="handleSignIn()">Sign In</button>
+        <p class="auth-note"><a href="#" onclick="switchTab('reset')">Forgot your password?</a></p>
+      </div>
+
+      <!-- Sign Up Form -->
+      <div id="signupForm" class="auth-form">
+        <div class="form-group">
+          <label class="form-label" for="signup-email">Email Address</label>
+          <input class="form-input" type="email" id="signup-email" placeholder="you@example.com" required/>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="signup-password">Password</label>
+          <input class="form-input" type="password" id="signup-password" placeholder="Min. 8 characters" required/>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="signup-username">Username</label>
+          <input class="form-input" type="text" id="signup-username" placeholder="Your display name" required/>
+        </div>
+        <button class="btn-submit" id="signupBtn" onclick="handleSignUp()">Create Account</button>
+        <p class="auth-note">By creating an account you agree to our <a href="terms.html">Terms of Service</a> and <a href="privacy.html">Privacy Policy</a>.</p>
+      </div>
+
+      <!-- Password Reset Form -->
+      <div id="resetForm" class="auth-form">
+        <p style="font-size:14px;color:var(--muted2);font-weight:300;margin-bottom:4px;">Enter your email and we'll send you a reset link.</p>
+        <div class="form-group">
+          <label class="form-label" for="reset-email">Email Address</label>
+          <input class="form-input" type="email" id="reset-email" placeholder="you@example.com" required/>
+        </div>
+        <button class="btn-submit" id="resetBtn" onclick="handleReset()">Send Reset Link</button>
+        <p class="auth-note"><a href="#" onclick="switchTab('signin')">Back to sign in</a></p>
+      </div>
+    </div>
+
+    <!-- Logged in state -->
+    <div id="dashboardBox" class="dashboard-box">
+      <p class="auth-eyebrow">// You're In</p>
+      <h2 class="dashboard-welcome">Welcome back,<br/><span id="userDisplay">Outlaw</span>.</h2>
+      <p class="dashboard-sub">Your account is active. The full platform is coming soon.</p>
+      <button class="btn-signout" onclick="handleSignOut()">Sign Out</button>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <p class="footer-copy">© 2026 Outlaw Studio. &nbsp;|&nbsp; <a href="privacy.html">Privacy Policy</a> &nbsp;|&nbsp; <a href="terms.html">Terms of Service</a></p>
+</footer>
+
+<script>
+  // CONFIG — your Supabase credentials
+  const SUPABASE_URL = 'https://lddchkwunumarejucgse.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_Vegw0EsACAR4emfdu-zSgA__A5HqQrO';
+
+  const { createClient } = supabase;
+  const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  // Check session on load
+  window.addEventListener('DOMContentLoaded', async () => {
+    const { data: { session } } = await sb.auth.getSession();
+    if (session) showDashboard(session.user);
+  });
+
+  function switchTab(tab) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+    clearMessage();
+    if (tab === 'signin') {
+      document.querySelectorAll('.tab')[0].classList.add('active');
+      document.getElementById('signinForm').classList.add('active');
+    } else if (tab === 'signup') {
+      document.querySelectorAll('.tab')[1].classList.add('active');
+      document.getElementById('signupForm').classList.add('active');
+    } else if (tab === 'reset') {
+      document.getElementById('resetForm').classList.add('active');
+    }
+  }
+
+  function showMessage(msg, type) {
+    const box = document.getElementById('msgBox');
+    box.textContent = msg;
+    box.className = 'auth-message visible ' + type;
+  }
+
+  function clearMessage() {
+    const box = document.getElementById('msgBox');
+    box.className = 'auth-message';
+    box.textContent = '';
+  }
+
+  function showDashboard(user) {
+    document.getElementById('authForms').style.display = 'none';
+    document.getElementById('dashboardBox').classList.add('visible');
+    const display = user.user_metadata?.username || user.email.split('@')[0];
+    document.getElementById('userDisplay').textContent = display;
+  }
+
+  async function handleSignIn() {
+    const email = document.getElementById('signin-email').value.trim();
+    const password = document.getElementById('signin-password').value;
+    if (!email || !password) return showMessage('// Please fill in all fields.', 'error');
+    const btn = document.getElementById('signinBtn');
+    btn.disabled = true;
+    btn.textContent = 'Signing in...';
+    const { data, error } = await sb.auth.signInWithPassword({ email, password });
+    if (error) {
+      showMessage('// ' + error.message, 'error');
+      btn.disabled = false;
+      btn.textContent = 'Sign In';
+    } else {
+      showDashboard(data.user);
+    }
+  }
+
+  async function handleSignUp() {
+    const email = document.getElementById('signup-email').value.trim();
+    const password = document.getElementById('signup-password').value;
+    const username = document.getElementById('signup-username').value.trim();
+    if (!email || !password || !username) return showMessage('// Please fill in all fields.', 'error');
+    if (password.length < 8) return showMessage('// Password must be at least 8 characters.', 'error');
+    const btn = document.getElementById('signupBtn');
+    btn.disabled = true;
+    btn.textContent = 'Creating account...';
+    const { data, error } = await sb.auth.signUp({
+      email, password,
+      options: { data: { username } }
+    });
+    if (error) {
+      showMessage('// ' + error.message, 'error');
+      btn.disabled = false;
+      btn.textContent = 'Create Account';
+    } else {
+      showMessage('// Account created. Check your email to confirm before signing in.', 'success');
+      btn.disabled = false;
+      btn.textContent = 'Create Account';
+    }
+  }
+
+  async function handleReset() {
+    const email = document.getElementById('reset-email').value.trim();
+    if (!email) return showMessage('// Please enter your email address.', 'error');
+    const btn = document.getElementById('resetBtn');
+    btn.disabled = true;
+    btn.textContent = 'Sending...';
+    const { error } = await sb.auth.resetPasswordForEmail(email, {
+      redirectTo: 'https://outlawstudio.io/auth.html'
+    });
+    if (error) {
+      showMessage('// ' + error.message, 'error');
+    } else {
+      showMessage('// Reset link sent. Check your inbox.', 'success');
+    }
+    btn.disabled = false;
+    btn.textContent = 'Send Reset Link';
+  }
+
+  async function handleSignOut() {
+    await sb.auth.signOut();
+    document.getElementById('authForms').style.display = 'block';
+    document.getElementById('dashboardBox').classList.remove('visible');
+  }
+</script>
+</body>
+</html>
